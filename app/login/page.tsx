@@ -17,7 +17,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -26,8 +26,9 @@ export default function LoginPage() {
 
       toast.success("Logged in successfully!");
       router.push("/dashboard");
-    } catch (error: any) {
-      toast.error(error.message || "Failed to login");
+    } catch (error) {
+      const err = error as Error;
+      toast.error(err.message || "Failed to login");
     } finally {
       setLoading(false);
     }
@@ -87,7 +88,7 @@ export default function LoginPage() {
 
           <div className="mt-6 text-center">
             <p className="text-neutral-500 text-sm">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link href="/signup" className="text-white hover:underline">
                 Sign up
               </Link>

@@ -20,6 +20,7 @@ export default function DashboardPage() {
     if (user) {
       fetchHomeData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchHomeData = async () => {
@@ -27,7 +28,7 @@ export default function DashboardPage() {
       setLoading(true);
       const data = await getHomeData(user!.id);
       setHomeData(data);
-    } catch (error: any) {
+    } catch {
       toast.error("Failed to load home data");
       // Set default empty data to avoid crashes
       setHomeData({
@@ -49,7 +50,6 @@ export default function DashboardPage() {
     );
   }
 
-  const balanceIsPositive = (homeData?.paper_balance || 0) >= 0;
   const totalReturnIsPositive = (homeData?.total_return || 0) >= 0;
   const singleDayIsPositive = (homeData?.single_day_return || 0) >= 0;
 
@@ -144,7 +144,7 @@ export default function DashboardPage() {
         title="Almanack"
       >
         <div className="space-y-4 text-neutral-300">
-          <p>Welcome to Visceral's Almanack - your guide to smarter trading.</p>
+          <p>Welcome to Visceral&apos;s Almanack - your guide to smarter trading.</p>
           <div className="space-y-3">
             <div className="bg-neutral-950/50 border border-neutral-800 rounded-lg p-4">
               <h4 className="text-white font-semibold mb-2">Risk Management</h4>

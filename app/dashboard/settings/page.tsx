@@ -20,8 +20,9 @@ export default function SettingsPage() {
       
       toast.success("Logged out successfully");
       router.push("/login");
-    } catch (error: any) {
-      toast.error(error.message || "Failed to logout");
+    } catch (error) {
+      const err = error as Error;
+      toast.error(err.message || "Failed to logout");
     } finally {
       setLoading(false);
     }

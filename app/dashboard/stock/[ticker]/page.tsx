@@ -31,6 +31,7 @@ export default function StockDetailsPage() {
     if (ticker) {
       loadStockDetails();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ticker, timeRange]);
 
   const loadStockDetails = async () => {
@@ -38,7 +39,7 @@ export default function StockDetailsPage() {
       setLoading(true);
       const data = await fetchStockDetails(ticker, timeRange);
       setStockDetails(data);
-    } catch (error: any) {
+    } catch {
       toast.error("Failed to load stock details");
     } finally {
       setLoading(false);

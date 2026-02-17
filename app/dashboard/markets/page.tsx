@@ -19,6 +19,7 @@ export default function MarketsPage() {
 
   useEffect(() => {
     loadMarketStocks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeMarket]);
 
   useEffect(() => {
@@ -31,6 +32,7 @@ export default function MarketsPage() {
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
 
   // Subscribe to realtime price updates
@@ -44,12 +46,12 @@ export default function MarketsPage() {
           schema: 'public',
           table: process.env.NEXT_PUBLIC_MARKETS_REALTIME_TABLE || 'market_prices',
         },
-        (payload: any) => {
+        (payload: { new?: { symbol?: string; [key: string]: unknown } }) => {
           // Update stock prices in real-time
           if (payload.new && payload.new.symbol) {
             setStocks((prevStocks) =>
               prevStocks.map((stock) =>
-                stock.symbol === payload.new.symbol
+                stock.symbol === payload.new?.symbol
                   ? { ...stock, ...payload.new }
                   : stock
               )
@@ -69,7 +71,7 @@ export default function MarketsPage() {
       setLoading(true);
       const data = await fetchMarkets(activeMarket);
       setStocks(data);
-    } catch (error: any) {
+    } catch {
       toast.error("Failed to load market data");
       setStocks([]);
     } finally {
@@ -84,7 +86,7 @@ export default function MarketsPage() {
       setSearching(true);
       const results = await searchStocks(searchQuery);
       setSearchResults(results);
-    } catch (error: any) {
+    } catch {
       toast.error("Search failed");
       setSearchResults([]);
     } finally {

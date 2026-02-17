@@ -54,7 +54,7 @@ export default function ExperiencePage() {
       >
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold tracking-[8px] mb-2">VISCERAL</h1>
-          <p className="text-neutral-400 text-lg">What's your experience level?</p>
+          <p className="text-neutral-400 text-lg">What&apos;s your experience level?</p>
         </div>
 
         <div className="space-y-4 mb-8">
