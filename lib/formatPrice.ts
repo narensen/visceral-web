@@ -1,8 +1,20 @@
-export function formatPrice(price: number, decimals: number = 2): string {
-  return price.toFixed(decimals);
+export const MARKET_CURRENCY: Record<string, string> = {
+  US: "$",
+  CRYPTO: "$",
+  CHINA: "¥",
+  INDIA: "₹",
+  IN: "₹",
+};
+
+export function formatPrice(latest: number, market: string): string {
+  const symbol = MARKET_CURRENCY[market?.toUpperCase()] ?? "$";
+  const safeValue = typeof latest === 'number' && Number.isFinite(latest) ? latest : 0;
+  return `${symbol}${safeValue.toFixed(2)}`;
 }
 
 export function formatPercentage(percentage: number): string {
-  const sign = percentage >= 0 ? '+' : '';
-  return `${sign}${percentage.toFixed(2)}%`;
+  const num = Number(percentage);
+  const safe = Number.isFinite(num) ? num : 0;
+  const sign = safe >= 0 ? '+' : '';
+  return `${sign}${safe.toFixed(2)}%`;
 }
