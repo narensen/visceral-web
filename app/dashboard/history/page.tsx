@@ -5,7 +5,7 @@ import { getTradeHistory } from "@/lib/trade";
 import { Trade } from "@/types/stock";
 import { motion } from "framer-motion";
 import { History, TrendingUp, TrendingDown, Calendar, DollarSign } from "lucide-react";
-import { formatPrice, formatPercentage } from "@/lib/formatPrice";
+import { formatPrice } from "@/lib/formatPrice";
 import { toast } from "sonner";
 
 export default function TradeHistoryPage() {
@@ -153,7 +153,7 @@ export default function TradeHistoryPage() {
                     <div className="flex items-center gap-4 text-sm text-neutral-400">
                       <span className="flex items-center gap-1">
                         <DollarSign size={14} />
-                        {formatPrice(trade.price)} × {trade.quantity}
+                        ${formatPrice(trade.price)} × {trade.quantity}
                       </span>
                       <span className="flex items-center gap-1">
                         <Calendar size={14} />

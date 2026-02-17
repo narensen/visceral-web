@@ -2,7 +2,7 @@
  * Format stock symbol for display
  * Handles crypto symbols and adds market suffixes
  */
-export function displaySymbol(symbol: string, market?: string): string {
+export function displaySymbol(symbol: string): string {
   if (!symbol) return "";
   
   // Remove common suffixes for cleaner display

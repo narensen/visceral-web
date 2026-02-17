@@ -1,11 +1,15 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 import { fetchStockDetails } from "@/lib/api";
 import { formatPrice, formatPercentage } from "@/lib/formatPrice";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Star } from "lucide-react";
 import { toast } from "sonner";
+import TradeModal from "@/components/TradeModal";
+import RangeSwitcher from "@/components/RangeSwitcher";
+import { addToWatchlist, removeFromWatchlist, isInWatchlist } from "@/lib/watchlist";
 
 interface StockDetails {
   symbol: string;
@@ -22,14 +26,19 @@ interface StockDetails {
 export default function StockDetailsPage() {
   const params = useParams();
   const router = useRouter();
+  const { user } = useAuth();
   const ticker = params.ticker as string;
   const [stockDetails, setStockDetails] = useState<StockDetails | null>(null);
   const [loading, setLoading] = useState(true);
-  const [timeRange, setTimeRange] = useState("1mo");
+  const [timeRange, setTimeRange] = useState("1M");
+  const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
+  const [tradeType, setTradeType] = useState<"buy" | "sell">("buy");
+  const [inWatchlist, setInWatchlist] = useState(false);
 
   useEffect(() => {
     if (ticker) {
       loadStockDetails();
+      checkWatchlist();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ticker, timeRange]);
@@ -37,13 +46,59 @@ export default function StockDetailsPage() {
   const loadStockDetails = async () => {
     try {
       setLoading(true);
-      const data = await fetchStockDetails(ticker, timeRange);
+      // Convert display range to API range
+      const apiRange = timeRange === "1D" ? "1d" : 
+                       timeRange === "1W" ? "1w" : 
+                       timeRange === "1M" ? "1mo" : 
+                       timeRange === "3M" ? "3mo" :
+                       timeRange === "6M" ? "6mo" : "1y";
+      const data = await fetchStockDetails(ticker, apiRange);
       setStockDetails(data);
     } catch {
       toast.error("Failed to load stock details");
     } finally {
       setLoading(false);
     }
+  };
+
+  const checkWatchlist = async () => {
+    if (user) {
+      try {
+        const result = await isInWatchlist(user.id, ticker);
+        setInWatchlist(result);
+      } catch (error) {
+        console.error("Failed to check watchlist:", error);
+      }
+    }
+  };
+
+  const handleWatchlistToggle = async () => {
+    if (!user) return;
+    
+    try {
+      if (inWatchlist) {
+        await removeFromWatchlist(user.id, ticker);
+        setInWatchlist(false);
+        toast.success("Removed from watchlist");
+      } else {
+        await addToWatchlist(user.id, ticker, "US"); // Default to US market
+        setInWatchlist(true);
+        toast.success("Added to watchlist");
+      }
+    } catch (error) {
+      const err = error as Error;
+      toast.error(err.message || "Failed to update watchlist");
+    }
+  };
+
+  const handleBuy = () => {
+    setTradeType("buy");
+    setIsTradeModalOpen(true);
+  };
+
+  const handleSell = () => {
+    setTradeType("sell");
+    setIsTradeModalOpen(true);
   };
 
   if (loading) {
@@ -74,14 +129,6 @@ export default function StockDetailsPage() {
   const isPositive = stockDetails.percentage_change >= 0;
   const colorClass = isPositive ? "text-positive" : "text-negative";
 
-  const timeRanges = [
-    { id: "1d", label: "1D" },
-    { id: "1w", label: "1W" },
-    { id: "1mo", label: "1M" },
-    { id: "3mo", label: "3M" },
-    { id: "1y", label: "1Y" },
-  ];
-
   return (
     <div className="space-y-6">
       {/* Back Button */}
@@ -104,6 +151,15 @@ export default function StockDetailsPage() {
             <h1 className="text-3xl font-bold text-white">{stockDetails.symbol}</h1>
             <p className="text-neutral-400 mt-1">{stockDetails.company_name}</p>
           </div>
+          <button
+            onClick={handleWatchlistToggle}
+            className="p-2 rounded-lg hover:bg-neutral-800 transition-colors"
+          >
+            <Star
+              size={24}
+              className={inWatchlist ? "fill-yellow-500 text-yellow-500" : "text-neutral-400"}
+            />
+          </button>
         </div>
         
         <div className="mb-4">
@@ -116,21 +172,10 @@ export default function StockDetailsPage() {
         </div>
 
         {/* Time Range Selector */}
-        <div className="flex gap-2">
-          {timeRanges.map((range) => (
-            <button
-              key={range.id}
-              onClick={() => setTimeRange(range.id)}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                timeRange === range.id
-                  ? "bg-white text-black"
-                  : "bg-neutral-950/50 text-neutral-400 hover:text-white"
-              }`}
-            >
-              {range.label}
-            </button>
-          ))}
-        </div>
+        <RangeSwitcher
+          selectedRange={timeRange}
+          onRangeChange={setTimeRange}
+        />
       </motion.div>
 
       {/* Stock Stats */}
@@ -186,13 +231,33 @@ export default function StockDetailsPage() {
         transition={{ delay: 0.2 }}
         className="grid grid-cols-2 gap-4"
       >
-        <button className="py-3 bg-white text-black font-semibold rounded-lg hover:bg-neutral-200 transition-colors">
+        <button
+          onClick={handleBuy}
+          className="py-4 bg-positive text-black font-semibold rounded-xl hover:bg-positive/90 transition-colors"
+        >
           Buy
         </button>
-        <button className="py-3 bg-neutral-950/65 border border-neutral-800 text-white font-semibold rounded-lg hover:border-neutral-700 transition-colors">
+        <button
+          onClick={handleSell}
+          className="py-4 bg-negative text-black font-semibold rounded-xl hover:bg-negative/90 transition-colors"
+        >
           Sell
         </button>
       </motion.div>
+
+      {/* Trade Modal */}
+      {user && (
+        <TradeModal
+          isOpen={isTradeModalOpen}
+          onClose={() => setIsTradeModalOpen(false)}
+          symbol={stockDetails.symbol}
+          companyName={stockDetails.company_name}
+          currentPrice={stockDetails.current_price}
+          market="US"
+          userId={user.id}
+          type={tradeType}
+        />
+      )}
     </div>
   );
 }

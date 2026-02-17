@@ -1,14 +1,15 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, TrendingUp, Trophy, User } from "lucide-react";
+import { Home, TrendingUp, Users, BookOpen, History } from "lucide-react";
 import { motion } from "framer-motion";
 
 const navItems = [
   { href: "/dashboard", label: "Home", icon: Home },
   { href: "/dashboard/markets", label: "Markets", icon: TrendingUp },
-  { href: "/dashboard/leagues", label: "Leagues", icon: Trophy },
-  { href: "/dashboard/settings", label: "Profile", icon: User },
+  { href: "/dashboard/history", label: "History", icon: History },
+  { href: "/dashboard/almanack", label: "Almanack", icon: BookOpen },
+  { href: "/dashboard/social", label: "Social", icon: Users },
 ];
 
 export default function BottomNav() {
