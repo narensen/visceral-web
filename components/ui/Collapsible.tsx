@@ -2,6 +2,7 @@
 import { ReactNode, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface CollapsibleProps {
   title: string | ReactNode;
@@ -14,12 +15,12 @@ export function Collapsible({
   title, 
   children, 
   defaultOpen = false,
-  className = "" 
+  className 
 }: CollapsibleProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className={`border border-neutral-800 rounded-lg overflow-hidden ${className}`}>
+    <div className={cn("border border-neutral-800 rounded-lg overflow-hidden", className)}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between p-4 bg-neutral-950/50 hover:bg-neutral-900/50 transition-colors"

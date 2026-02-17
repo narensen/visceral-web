@@ -1,5 +1,6 @@
 "use client";
 import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 interface ThemedTextProps {
   children: ReactNode;
@@ -9,7 +10,7 @@ interface ThemedTextProps {
 
 export function ThemedText({ 
   children, 
-  className = "", 
+  className, 
   type = "default" 
 }: ThemedTextProps) {
   const baseStyles = "text-white";
@@ -23,7 +24,7 @@ export function ThemedText({
   };
 
   return (
-    <span className={`${baseStyles} ${typeStyles[type]} ${className}`}>
+    <span className={cn(baseStyles, typeStyles[type], className)}>
       {children}
     </span>
   );

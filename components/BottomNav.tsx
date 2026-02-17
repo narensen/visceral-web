@@ -29,6 +29,10 @@ const tabs: DashboardTab[] = [
   },
 ];
 
+// Constants for pill indicator positioning
+const PILL_HORIZONTAL_MARGIN = 0.25; // rem
+const PILL_HORIZONTAL_SPACING = 0.5; // rem
+
 export default function BottomNav() {
   const pathname = usePathname();
 
@@ -71,15 +75,10 @@ export default function BottomNav() {
             className="absolute h-10 bg-[#090909] border border-white/5 rounded-full"
             initial={false}
             animate={{
-              left: `${(activeIndex / tabs.length) * 100}%`,
-              width: `${100 / tabs.length}%`,
+              left: `calc(${(activeIndex / tabs.length) * 100}% + ${PILL_HORIZONTAL_MARGIN}rem)`,
+              width: `calc(${100 / tabs.length}% - ${PILL_HORIZONTAL_SPACING}rem)`,
             }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            style={{
-              marginLeft: "0.25rem",
-              marginRight: "0.25rem",
-              width: `calc(${100 / tabs.length}% - 0.5rem)`,
-            }}
           />
         )}
 
