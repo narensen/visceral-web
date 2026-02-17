@@ -21,6 +21,7 @@ interface StockDetails {
   open: number;
   volume: number;
   market_cap?: string;
+  market: string;
 }
 
 export default function StockDetailsPage() {
@@ -81,7 +82,7 @@ export default function StockDetailsPage() {
         setInWatchlist(false);
         toast.success("Removed from watchlist");
       } else {
-        await addToWatchlist(user.id, ticker, "US"); // Default to US market
+        await addToWatchlist(user.id, ticker, stockDetails?.market || "US"); // Use actual market or default to US
         setInWatchlist(true);
         toast.success("Added to watchlist");
       }
@@ -253,7 +254,7 @@ export default function StockDetailsPage() {
           symbol={stockDetails.symbol}
           companyName={stockDetails.company_name}
           currentPrice={stockDetails.current_price}
-          market="US"
+          market={stockDetails.market || "US"}
           userId={user.id}
           type={tradeType}
         />

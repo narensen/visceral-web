@@ -3,7 +3,7 @@ import { useState, FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, TrendingUp, TrendingDown } from "lucide-react";
 import { buyStock, sellStock } from "@/lib/trade";
-import { formatPrice } from "@/lib/formatPrice";
+import { formatPriceWithSymbol } from "@/lib/formatPrice";
 import { toast } from "sonner";
 
 interface TradeModalProps {
@@ -126,7 +126,7 @@ export default function TradeModal({
                     Current Price
                   </label>
                   <div className="text-white text-2xl font-bold">
-                    ${formatPrice(currentPrice)}
+                    {formatPriceWithSymbol(currentPrice, market)}
                   </div>
                 </div>
 
@@ -157,12 +157,12 @@ export default function TradeModal({
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-neutral-500 text-sm">Total Value</span>
                     <span className="text-white text-2xl font-bold">
-                      ${formatPrice(totalValue)}
+                      {formatPriceWithSymbol(totalValue, market)}
                     </span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-neutral-500">
-                      {quantityNum} × ${formatPrice(currentPrice)}
+                      {quantityNum} × {formatPriceWithSymbol(currentPrice, market)}
                     </span>
                   </div>
                 </div>

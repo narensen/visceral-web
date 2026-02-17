@@ -12,7 +12,7 @@ export function formatPrice(latest: number): string {
 }
 
 export function formatPriceWithSymbol(latest: number, market?: string): string {
-  const symbol = market ? (MARKET_CURRENCY[market?.toUpperCase()] ?? "$") : "$";
+  const symbol = market ? MARKET_CURRENCY[market.toUpperCase()] ?? "$" : "$";
   const safeValue = typeof latest === 'number' && Number.isFinite(latest) ? latest : 0;
   return `${symbol}${safeValue.toFixed(2)}`;
 }
