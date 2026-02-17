@@ -13,6 +13,17 @@ const config: Config = {
         positive: "#bbf7d0",
         negative: "#fca5a5",
       },
+      fontFamily: {
+        sans: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
+          '"Helvetica Neue"',
+          'Arial',
+          'sans-serif',
+        ],
+      },
     },
   },
   plugins: [],

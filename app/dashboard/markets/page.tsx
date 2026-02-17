@@ -44,15 +44,17 @@ export default function MarketsPage() {
           schema: 'public',
           table: process.env.NEXT_PUBLIC_MARKETS_REALTIME_TABLE || 'market_prices',
         },
-        (payload) => {
+        (payload: any) => {
           // Update stock prices in real-time
-          setStocks((prevStocks) =>
-            prevStocks.map((stock) =>
-              stock.symbol === payload.new.symbol
-                ? { ...stock, ...payload.new }
-                : stock
-            )
-          );
+          if (payload.new && payload.new.symbol) {
+            setStocks((prevStocks) =>
+              prevStocks.map((stock) =>
+                stock.symbol === payload.new.symbol
+                  ? { ...stock, ...payload.new }
+                  : stock
+              )
+            );
+          }
         }
       )
       .subscribe();
