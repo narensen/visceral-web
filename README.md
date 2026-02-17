@@ -1,26 +1,33 @@
 # Visceral Web - Trading Platform
 
-A modern, responsive web application for paper trading stocks and cryptocurrencies. Built with Next.js 14+ and designed to match the Visceral mobile app experience.
+A modern, responsive web application for paper trading stocks and cryptocurrencies. Built with Next.js 15+ and designed to match the Visceral mobile app experience, now ported with full functionality.
 
 ## Features
 
 - 🔐 **Authentication** - Secure login/signup with Supabase
-- 📊 **Real-time Market Data** - Live price updates using Supabase realtime
-- 💼 **Portfolio Management** - Track your paper trading portfolio
+- 📊 **Real-time Market Data** - Live price updates using Supabase realtime subscriptions
+- 💼 **Portfolio Management** - Track your paper trading portfolio with detailed analytics
 - 🔍 **Stock Search** - Find and analyze stocks across US, Indian, and crypto markets
 - 📱 **Responsive Design** - Works seamlessly on desktop and mobile browsers
-- 🌙 **Dark Theme** - Sleek dark UI matching the mobile app
+- 🌙 **Dark Theme** - Sleek dark UI matching the mobile app design language
+- 💰 **Trading** - Buy and sell stocks with realistic paper trading
+- ⭐ **Watchlist** - Track your favorite stocks across all markets
+- 📚 **Financial Guide** - Educational content for learning trading
+- 📖 **Almanack** - Trading journal to track decisions and insights
+- 📈 **Trade History** - Comprehensive history of all your trades
 - 🏆 **Leagues** - Compete with friends (coming soon)
+- 👥 **Social Features** - Connect with other traders (coming soon)
 
 ## Tech Stack
 
-- **Framework**: Next.js 14+ with App Router
+- **Framework**: Next.js 15+ with App Router
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS
+- **Styling**: Tailwind CSS with custom design system
 - **Authentication**: Supabase (@supabase/ssr)
-- **Animations**: Framer Motion
+- **Animations**: Framer Motion (ported from React Native Reanimated)
 - **Icons**: Lucide React
 - **Notifications**: Sonner
+- **Real-time**: Supabase Realtime Subscriptions
 
 ## Getting Started
 
@@ -67,33 +74,62 @@ npm run dev
 
 ```
 visceral-web/
-├── app/                    # Next.js app directory
-│   ├── dashboard/         # Protected dashboard pages
-│   │   ├── page.tsx      # Home/portfolio page
-│   │   ├── markets/      # Markets listing
-│   │   ├── stock/        # Stock details
-│   │   ├── leagues/      # Leagues (coming soon)
-│   │   └── settings/     # User settings
-│   ├── login/            # Login page
-│   ├── signup/           # Signup page
-│   ├── onboarding/       # Onboarding flow
-│   └── layout.tsx        # Root layout
-├── components/           # React components
-│   ├── BottomNav.tsx    # Bottom navigation
-│   ├── StockRow.tsx     # Stock list item
-│   ├── MarketTabs.tsx   # Market tabs
-│   ├── HoldingCard.tsx  # Portfolio holding card
-│   └── Modal.tsx        # Modal dialog
-├── hooks/               # Custom React hooks
-│   └── useAuth.ts       # Authentication hook
-├── lib/                 # Utilities and services
-│   ├── supabase.ts     # Supabase client
-│   ├── api.ts          # API functions
-│   ├── formatPrice.ts  # Price formatting
-│   └── utils.ts        # General utilities
-├── types/              # TypeScript types
-│   └── stock.ts        # Stock-related types
-└── public/            # Static assets
+├── app/                       # Next.js app directory
+│   ├── dashboard/            # Protected dashboard pages
+│   │   ├── page.tsx         # Home/portfolio page
+│   │   ├── markets/         # Markets listing with search
+│   │   ├── stock/[ticker]/  # Stock details with trading
+│   │   ├── history/         # Trade history
+│   │   ├── almanack/        # Trading journal
+│   │   ├── social/          # Social features (coming soon)
+│   │   ├── leagues/         # Leagues (coming soon)
+│   │   └── settings/        # User settings
+│   ├── onboarding/          # Onboarding flow
+│   │   ├── intent/          # User intent selection
+│   │   ├── experience/      # Market experience level
+│   │   └── intro/           # App introduction
+│   ├── login/               # Login page
+│   ├── signup/              # Signup page
+│   └── layout.tsx           # Root layout
+├── components/              # React components
+│   ├── BottomNav.tsx       # Bottom navigation
+│   ├── StockRow.tsx        # Stock list item
+│   ├── MarketTabs.tsx      # Market tabs selector
+│   ├── RangeSwitcher.tsx   # Time range selector
+│   ├── TradeModal.tsx      # Buy/sell trading modal
+│   ├── FinancialGuideModal.tsx  # Educational guide
+│   ├── LuxuryToggle.tsx    # Animated toggle switch
+│   ├── HoldingCard.tsx     # Portfolio holding card
+│   ├── Modal.tsx           # Modal dialog
+│   └── ui/                 # UI components
+│       ├── Button.tsx
+│       ├── Input.tsx
+│       ├── Card.tsx
+│       └── Spinner.tsx
+├── hooks/                  # Custom React hooks
+│   ├── useAuth.ts         # Authentication hook
+│   ├── useColorScheme.ts  # Color scheme detection
+│   └── useThemeColor.ts   # Theme color utility
+├── lib/                   # Utilities and services
+│   ├── supabase.ts       # Supabase client
+│   ├── api.ts            # API functions
+│   ├── trade.ts          # Trading API
+│   ├── watchlist.ts      # Watchlist API
+│   ├── almanack.ts       # Almanack API
+│   ├── formatPrice.ts    # Price formatting
+│   ├── currency.ts       # Currency symbols
+│   ├── displaySymbol.ts  # Symbol formatting
+│   ├── userMetrics.ts    # User streak tracking
+│   ├── notifications.ts  # Browser notifications
+│   ├── notificationSettings.ts  # Notification preferences
+│   ├── financialGuide.ts        # Guide logic
+│   ├── financialGuideContent.ts # Guide content
+│   └── utils.ts          # General utilities
+├── types/                # TypeScript types
+│   └── stock.ts         # Stock-related types
+├── constants/           # Constants
+│   └── theme.ts        # Theme colors and spacing
+└── public/             # Static assets
 ```
 
 ## Available Scripts
@@ -111,6 +147,16 @@ The app connects to a backend API with the following endpoints:
 - `GET /single-stock/{ticker}?range={1d|1w|1mo|3mo|1y}` - Get stock details
 - `GET /search?q={query}` - Search for stocks
 - `GET /home?user_id={id}` - Get user portfolio data
+- `POST /trade/buy` - Buy a stock
+- `POST /trade/sell` - Sell a stock
+- `GET /trades?user_id={id}` - Get trade history
+- `GET /watchlist?user_id={id}` - Get watchlist
+- `POST /watchlist` - Add to watchlist
+- `DELETE /watchlist/{symbol}` - Remove from watchlist
+- `GET /almanack?user_id={id}` - Get almanack entries
+- `POST /almanack` - Create almanack entry
+- `PUT /almanack/{id}` - Update almanack entry
+- `DELETE /almanack/{id}` - Delete almanack entry
 
 ## Design System
 
@@ -142,12 +188,42 @@ The app connects to a backend API with the following endpoints:
 ### Responsive Design
 - Mobile-first approach
 - Bottom navigation on mobile
-- Optimized for all screen sizes
+- Optimized for all screen sizes (mobile, tablet, desktop)
+- Touch-optimized for mobile browsers
 
 ### Animations
 - Smooth page transitions with Framer Motion
 - Interactive button press effects
 - Modal animations
+- Time range selector animations
+
+## Architecture
+
+### React Native → Next.js Migration
+
+This app is a complete port from React Native to Next.js, with the following conversions:
+
+- **Components**: `View` → `div`, `Text` → `span/p`, `TouchableOpacity` → `button`
+- **Navigation**: Expo Router → Next.js App Router
+- **Animations**: React Native Reanimated → Framer Motion
+- **Storage**: AsyncStorage → localStorage (with SSR checks)
+- **Styling**: NativeWind → Tailwind CSS (direct compatibility)
+
+### Key Features from Mobile App
+
+All features from the mobile app have been ported:
+- ✅ Complete authentication flow
+- ✅ Onboarding experience
+- ✅ Portfolio dashboard
+- ✅ Markets with real-time updates
+- ✅ Stock details with charts
+- ✅ Trading functionality (buy/sell)
+- ✅ Watchlist management
+- ✅ Trade history
+- ✅ Trading journal (Almanack)
+- ✅ Financial education guide
+- 🚧 Social features (coming soon)
+- 🚧 Leagues/competitions (coming soon)
 
 ## Contributing
 
