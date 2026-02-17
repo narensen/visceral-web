@@ -12,6 +12,10 @@ const config: Config = {
         background: "#000000",
         positive: "#bbf7d0",
         negative: "#fca5a5",
+        btnBackground: "#1a1a1a",
+        btnText: "#ffffff",
+        cardBackground: "#0A0A0A",
+        cardBorder: "#333333",
       },
       fontFamily: {
         sans: [
@@ -23,6 +27,9 @@ const config: Config = {
           'Arial',
           'sans-serif',
         ],
+      },
+      letterSpacing: {
+        brand: '8px',
       },
     },
   },
