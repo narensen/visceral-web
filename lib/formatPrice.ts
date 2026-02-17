@@ -6,8 +6,13 @@ export const MARKET_CURRENCY: Record<string, string> = {
   IN: "₹",
 };
 
-export function formatPrice(latest: number, market: string): string {
-  const symbol = MARKET_CURRENCY[market?.toUpperCase()] ?? "$";
+export function formatPrice(latest: number): string {
+  const safeValue = typeof latest === 'number' && Number.isFinite(latest) ? latest : 0;
+  return `${safeValue.toFixed(2)}`;
+}
+
+export function formatPriceWithSymbol(latest: number, market?: string): string {
+  const symbol = market ? MARKET_CURRENCY[market.toUpperCase()] ?? "$" : "$";
   const safeValue = typeof latest === 'number' && Number.isFinite(latest) ? latest : 0;
   return `${symbol}${safeValue.toFixed(2)}`;
 }
